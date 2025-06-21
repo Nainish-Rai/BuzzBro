@@ -3,95 +3,608 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BuzzBro Options</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>BuzzBro Settings</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          #0f0f0f 0%,
+          #1a1a1a 50%,
+          #2d2d2d 100%
+        );
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.9);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .options-container {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .header {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          45deg,
+          rgba(59, 130, 246, 0.1) 0%,
+          rgba(147, 51, 234, 0.1) 50%,
+          rgba(16, 185, 129, 0.1) 100%
+        );
+        pointer-events: none;
+      }
+
+      .header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header p {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.6);
+        position: relative;
+        z-index: 1;
+      }
+
+      .content {
+        display: grid;
+        gap: 24px;
+      }
+
+      .section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 32px;
+        transition: all 0.3s ease;
+      }
+
+      .section:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .section h2 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 24px;
+        color: rgba(255, 255, 255, 0.95);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .setting-item {
+        margin-bottom: 24px;
+      }
+
+      .setting-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .setting-item label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+      }
+
+      .setting-item input[type="text"],
+      .setting-item input[type="password"],
+      .setting-item select,
+      .setting-item textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        font-family: inherit;
+        transition: all 0.2s ease;
+      }
+
+      .setting-item input[type="text"]:focus,
+      .setting-item input[type="password"]:focus,
+      .setting-item select:focus,
+      .setting-item textarea:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(59, 130, 246, 0.5);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .setting-item textarea {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.5;
+      }
+
+      .setting-item small {
+        display: block;
+        margin-top: 6px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .setting-item small a {
+        color: rgba(59, 130, 246, 1);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .setting-item small a:hover {
+        color: rgba(99, 170, 255, 1);
+      }
+
+      /* Toggle Switch Styles */
+      .toggle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        transition: all 0.2s ease;
+      }
+
+      .toggle:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .toggle input {
+        display: none;
+      }
+
+      .slider {
+        position: relative;
+        width: 48px;
+        height: 26px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 13px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
+
+      .slider::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .toggle input:checked + .slider {
+        background: rgba(59, 130, 246, 0.3);
+        border-color: rgba(59, 130, 246, 0.5);
+      }
+
+      .toggle input:checked + .slider::before {
+        transform: translateX(22px);
+        background: rgba(59, 130, 246, 1);
+      }
+
+      .toggle input:disabled + .slider {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .toggle .label {
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .toggle input:disabled ~ .label {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      /* Action Buttons */
+      .actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        margin-top: 32px;
+        padding: 24px;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 140px;
+        justify-content: center;
+      }
+
+      .btn-primary {
+        background: rgba(59, 130, 246, 0.15);
+        border-color: rgba(59, 130, 246, 0.3);
+        color: rgba(59, 130, 246, 1);
+      }
+
+      .btn-primary:hover {
+        background: rgba(59, 130, 246, 0.25);
+        border-color: rgba(59, 130, 246, 0.5);
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+        transform: translateY(-1px);
+      }
+
+      /* Loading and notification states */
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(16, 185, 129, 0.15);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 8px;
+        padding: 16px 20px;
+        color: rgba(16, 185, 129, 1);
+        font-size: 14px;
+        font-weight: 500;
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 300px;
+      }
+
+      .notification.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .notification.error {
+        background: rgba(220, 38, 38, 0.15);
+        border-color: rgba(220, 38, 38, 0.3);
+        color: rgba(220, 38, 38, 1);
+      }
+
+      /* API Key visibility toggle */
+      .api-key-container {
+        position: relative;
+      }
+
+      .toggle-visibility {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+      }
+
+      .toggle-visibility:hover {
+        color: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      /* Status indicators */
+      .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        margin-left: 8px;
+      }
+
+      .status-indicator.success {
+        background: rgba(16, 185, 129, 0.15);
+        color: rgba(16, 185, 129, 1);
+      }
+
+      .status-indicator.warning {
+        background: rgba(245, 158, 11, 0.15);
+        color: rgba(245, 158, 11, 1);
+      }
+
+      .status-indicator.error {
+        background: rgba(220, 38, 38, 0.15);
+        color: rgba(220, 38, 38, 1);
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        body {
+          padding: 16px;
+        }
+
+        .header {
+          padding: 24px;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+
+        .section {
+          padding: 24px;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="options-container">
       <div class="header">
         <h1>🚀 BuzzBro Settings</h1>
-        <p>Configure your Twitter/X enhancement preferences</p>
+        <p>Configure your AI-powered Twitter/X reply generator</p>
       </div>
 
       <div class="content">
         <div class="section">
-          <h2>General Settings</h2>
+          <h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" />
+            </svg>
+            General Settings
+          </h2>
 
           <div class="setting-item">
             <label class="toggle">
-              <input type="checkbox" id="enabledToggle" checked />
+              <input type="checkbox" id="enabledToggle" />
               <span class="slider"></span>
-              <span class="label">Enable BuzzBro</span>
+              <span class="label">Enable BuzzBro Extension</span>
             </label>
           </div>
-
-          <div class="setting-item">
-            <label for="theme">Theme</label>
-            <select id="theme">
-              <option value="auto">Auto (Follow System)</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </div>
         </div>
 
         <div class="section">
-          <h2>🧠 AI Configuration</h2>
+          <h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 2L2 7v10l10 5 10-5V7z" />
+              <path d="m16.5 9.4-5 3-5-3" />
+            </svg>
+            AI Configuration
+          </h2>
 
           <div class="setting-item">
-            <label for="apiKey">Gemini API Key</label>
-            <input
-              type="password"
-              id="apiKey"
-              placeholder="Enter your Gemini API key"
-            />
-            <small
-              >Get your API key from
+            <label for="apiKey">
+              Gemini API Key
+              <span
+                class="status-indicator"
+                id="apiKeyStatus"
+                style="display: none"
+              ></span>
+            </label>
+            <div class="api-key-container">
+              <input
+                type="password"
+                id="apiKey"
+                placeholder="Enter your Gemini API key here..."
+              />
+              <button type="button" class="toggle-visibility" id="toggleApiKey">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+            <small>
+              Get your free API key from
               <a href="https://aistudio.google.com/app/apikey" target="_blank"
                 >Google AI Studio</a
-              ></small
-            >
+              >. This key is stored locally and never shared.
+            </small>
           </div>
 
           <div class="setting-item">
-            <label for="customPrompt">Custom Prompt</label>
+            <label for="customPrompt">Custom Prompt Template</label>
             <textarea
               id="customPrompt"
-              rows="4"
-              placeholder="Enter your custom prompt for reply generation..."
+              placeholder="Customize how the AI generates replies. For example: 'Generate a witty and engaging reply that adds value to the conversation. Keep it concise and friendly.'"
             ></textarea>
-            <small
-              >Customize how the AI generates replies. Leave empty for default
-              behavior.</small
-            >
+            <small>
+              Leave empty to use the default prompt. Custom prompts help tailor
+              the AI's response style to your preferences.
+            </small>
           </div>
         </div>
 
         <div class="section">
-          <h2>Features (Coming Soon)</h2>
+          <h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              />
+            </svg>
+            Advanced Features
+            <span class="status-indicator warning">Coming Soon</span>
+          </h2>
 
           <div class="setting-item">
             <label class="toggle">
               <input type="checkbox" id="autoEnhance" disabled />
               <span class="slider"></span>
-              <span class="label">Auto-enhance tweets</span>
+              <span class="label">Auto-enhance tweet drafts</span>
             </label>
           </div>
 
           <div class="setting-item">
             <label class="toggle">
-              <input type="checkbox" id="notifications" disabled />
+              <input type="checkbox" id="smartNotifications" disabled />
               <span class="slider"></span>
-              <span class="label">Show notifications</span>
+              <span class="label">Smart notification suggestions</span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <label class="toggle">
+              <input type="checkbox" id="contextualReplies" disabled />
+              <span class="slider"></span>
+              <span class="label">Context-aware reply threading</span>
             </label>
           </div>
         </div>
-
-        <div class="actions">
-          <button id="saveBtn" class="btn-primary">Save Settings</button>
-          <button id="resetBtn" class="btn-secondary">Reset to Defaults</button>
-        </div>
       </div>
+
+      <div class="actions">
+        <button id="saveBtn" class="btn-primary">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+            />
+            <polyline points="17,21 17,13 7,13 7,21" />
+            <polyline points="7,3 7,8 15,8" />
+          </svg>
+          Save Settings
+        </button>
+        <button id="resetBtn" class="btn-secondary">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="1,4 1,10 7,10" />
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+          </svg>
+          Reset to Defaults
+        </button>
+      </div>
+    </div>
+
+    <div class="notification" id="notification">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+      <span id="notificationText"></span>
     </div>
 
     <script src="options.js"></script>

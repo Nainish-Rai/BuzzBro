@@ -81,12 +81,19 @@ Generate only the reply text, nothing else:`;
 
 async function getStoredSettings() {
   try {
-    const settings = await chrome.storage.sync.get({
-      apiKey: "",
-      customPrompt: "",
-      enabled: true,
+    // Content scripts can't access chrome.storage directly
+    // We need to send a message to the background script
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage({ action: "getSettings" }, (response) => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+        } else if (response && response.success) {
+          resolve(response.settings);
+        } else {
+          reject(new Error(response?.error || "Failed to get settings"));
+        }
+      });
     });
-    return settings;
   } catch (error) {
     console.error("Error getting stored settings:", error);
     throw error;

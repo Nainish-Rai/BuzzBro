@@ -18,9 +18,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   switch (request.action) {
     case "getSettings":
-      chrome.storage.sync.get(null, (data) => {
-        sendResponse(data);
-      });
+      chrome.storage.sync.get(
+        {
+          apiKey: "",
+          customPrompt: "",
+          enabled: true,
+        },
+        (data) => {
+          if (chrome.runtime.lastError) {
+            sendResponse({
+              success: false,
+              error: chrome.runtime.lastError.message,
+            });
+          } else {
+            sendResponse({
+              success: true,
+              settings: data,
+            });
+          }
+        }
+      );
       return true; // Keep message channel open for async response
 
     case "openOptions":
