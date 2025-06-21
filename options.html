@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BuzzBro Options</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="options-container">
+      <div class="header">
+        <h1>🚀 BuzzBro Settings</h1>
+        <p>Configure your Twitter/X enhancement preferences</p>
+      </div>
+
+      <div class="content">
+        <div class="section">
+          <h2>General Settings</h2>
+
+          <div class="setting-item">
+            <label class="toggle">
+              <input type="checkbox" id="enabledToggle" checked />
+              <span class="slider"></span>
+              <span class="label">Enable BuzzBro</span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <label for="theme">Theme</label>
+            <select id="theme">
+              <option value="auto">Auto (Follow System)</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Features (Coming Soon)</h2>
+
+          <div class="setting-item">
+            <label class="toggle">
+              <input type="checkbox" id="autoEnhance" disabled />
+              <span class="slider"></span>
+              <span class="label">Auto-enhance tweets</span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <label class="toggle">
+              <input type="checkbox" id="notifications" disabled />
+              <span class="slider"></span>
+              <span class="label">Show notifications</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="saveBtn" class="btn-primary">Save Settings</button>
+          <button id="resetBtn" class="btn-secondary">Reset to Defaults</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>

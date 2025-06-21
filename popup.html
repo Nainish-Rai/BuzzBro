@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BuzzBro</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="popup-container">
+      <div class="header">
+        <h1>🚀 BuzzBro</h1>
+        <p>Twitter/X Enhancement Tool</p>
+      </div>
+
+      <div class="content">
+        <div class="toggle-section">
+          <label class="toggle">
+            <input type="checkbox" id="enabledToggle" checked />
+            <span class="slider"></span>
+            <span class="label">Extension Enabled</span>
+          </label>
+        </div>
+
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-value">0</span>
+            <span class="stat-label">Tweets Enhanced</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="optionsBtn" class="btn-secondary">Settings</button>
+          <button id="refreshBtn" class="btn-primary">Refresh</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
