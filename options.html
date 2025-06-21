@@ -23,6 +23,7 @@
         color: rgba(255, 255, 255, 0.9);
         min-height: 100vh;
         padding: 20px;
+        line-height: 1.6;
       }
 
       .options-container {
@@ -66,6 +67,7 @@
         margin-bottom: 8px;
         position: relative;
         z-index: 1;
+        color: rgba(255, 255, 255, 0.95);
       }
 
       .header p {
@@ -88,6 +90,27 @@
         border-radius: 16px;
         padding: 32px;
         transition: all 0.3s ease;
+        position: relative;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      .section:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .section:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .section:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       .section:hover {
@@ -103,18 +126,20 @@
         color: rgba(255, 255, 255, 0.95);
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 12px;
       }
 
       .setting-item {
         margin-bottom: 24px;
+        display: block !important;
+        min-height: fit-content;
       }
 
       .setting-item:last-child {
         margin-bottom: 0;
       }
 
-      .setting-item label {
+      .setting-item label:not(.toggle) {
         display: block;
         font-weight: 500;
         margin-bottom: 8px;
@@ -137,27 +162,34 @@
         font-size: 14px;
         font-family: inherit;
         transition: all 0.2s ease;
+        outline: none;
       }
 
       .setting-item input[type="text"]:focus,
       .setting-item input[type="password"]:focus,
       .setting-item select:focus,
       .setting-item textarea:focus {
-        outline: none;
         background: rgba(255, 255, 255, 0.12);
         border-color: rgba(59, 130, 246, 0.5);
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .setting-item input[type="text"]::placeholder,
+      .setting-item input[type="password"]::placeholder,
+      .setting-item textarea::placeholder {
+        color: rgba(255, 255, 255, 0.4);
       }
 
       .setting-item textarea {
         resize: vertical;
         min-height: 100px;
         line-height: 1.5;
+        font-family: inherit;
       }
 
       .setting-item small {
         display: block;
-        margin-top: 6px;
+        margin-top: 8px;
         color: rgba(255, 255, 255, 0.5);
         font-size: 12px;
         line-height: 1.4;
@@ -175,7 +207,7 @@
 
       /* Toggle Switch Styles */
       .toggle {
-        display: flex;
+        display: flex !important;
         align-items: center;
         gap: 12px;
         cursor: pointer;
@@ -184,6 +216,9 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 12px;
         transition: all 0.2s ease;
+        width: 100%;
+        justify-content: flex-start;
+        min-height: fit-content;
       }
 
       .toggle:hover {
@@ -192,7 +227,7 @@
       }
 
       .toggle input {
-        display: none;
+        display: none !important;
       }
 
       .slider {
@@ -237,6 +272,7 @@
       .toggle .label {
         font-weight: 500;
         color: rgba(255, 255, 255, 0.8);
+        flex-grow: 1;
       }
 
       .toggle input:disabled ~ .label {
@@ -250,6 +286,7 @@
         justify-content: center;
         margin-top: 32px;
         padding: 24px;
+        flex-wrap: wrap;
       }
 
       .btn-primary,
@@ -268,6 +305,8 @@
         gap: 8px;
         min-width: 140px;
         justify-content: center;
+        text-decoration: none;
+        outline: none;
       }
 
       .btn-primary {
@@ -276,7 +315,7 @@
         color: rgba(59, 130, 246, 1);
       }
 
-      .btn-primary:hover {
+      .btn-primary:hover:not(:disabled) {
         background: rgba(59, 130, 246, 0.25);
         border-color: rgba(59, 130, 246, 0.5);
         transform: translateY(-1px);
@@ -288,7 +327,7 @@
         color: rgba(255, 255, 255, 0.7);
       }
 
-      .btn-secondary:hover {
+      .btn-secondary:hover:not(:disabled) {
         background: rgba(255, 255, 255, 0.1);
         border-color: rgba(255, 255, 255, 0.2);
         color: rgba(255, 255, 255, 0.9);
@@ -322,6 +361,7 @@
         align-items: center;
         gap: 8px;
         max-width: 300px;
+        word-wrap: break-word;
       }
 
       .notification.show {
@@ -338,6 +378,12 @@
       /* API Key visibility toggle */
       .api-key-container {
         position: relative;
+        width: 100%;
+        min-height: fit-content;
+      }
+
+      .api-key-container input {
+        padding-right: 48px !important;
       }
 
       .toggle-visibility {
@@ -352,6 +398,11 @@
         padding: 4px;
         border-radius: 4px;
         transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
       }
 
       .toggle-visibility:hover {
@@ -369,6 +420,7 @@
         font-size: 12px;
         font-weight: 500;
         margin-left: 8px;
+        vertical-align: middle;
       }
 
       .status-indicator.success {
@@ -392,6 +444,10 @@
           padding: 16px;
         }
 
+        .options-container {
+          max-width: 100%;
+        }
+
         .header {
           padding: 24px;
         }
@@ -406,12 +462,34 @@
 
         .actions {
           flex-direction: column;
+          align-items: stretch;
         }
 
         .btn-primary,
         .btn-secondary {
           width: 100%;
+          min-width: auto;
         }
+
+        .notification {
+          right: 16px;
+          left: 16px;
+          max-width: none;
+          transform: translateY(-100px);
+        }
+
+        .notification.show {
+          transform: translateY(0);
+        }
+      }
+
+      /* Ensure proper text rendering */
+      body,
+      input,
+      textarea,
+      button {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
     </style>
   </head>
