@@ -4,11 +4,15 @@
   "version": "1.0.0",
   "description": "AI-powered reply generator for X (Twitter) - Enhance your engagement with smart, context-aware responses",
   "permissions": ["activeTab", "storage"],
-  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+  "host_permissions": [
+    "https://x.com/*",
+    "https://twitter.com/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
   "content_scripts": [
     {
       "matches": ["https://x.com/*", "https://twitter.com/*"],
-      "js": ["content.js"],
+      "js": ["utils/api.js", "content.js"],
       "css": ["styles.css"],
       "run_at": "document_idle"
     }

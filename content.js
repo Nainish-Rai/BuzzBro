@@ -277,28 +277,90 @@ function injectGenerateButton(replyBox) {
   }
 }
 
-function handleGenerateClick(replyBox) {
+async function handleGenerateClick(replyBox) {
   try {
-    // Extract tweet text from the parent tweet
     const tweetText = extractTweetText(replyBox);
-
     console.log("🐦 Tweet text extracted:", tweetText);
-    console.log("📝 Generate reply clicked for tweet:", tweetText);
 
-    // Show loading state
-    const button = replyBox.parentElement.querySelector(
-      ".buzzbro-generate-btn"
-    );
-    if (button) {
-      const originalText = button.innerHTML;
-      button.innerHTML = "⏳ Generating...";
-      button.disabled = true;
+    if (!tweetText) {
+      console.log("No tweet text found");
+      return;
+    }
 
-      // Reset button after 2 seconds (placeholder for actual generation)
+    const button =
+      replyBox
+        .closest('[data-testid="inline_reply_offscreen"]')
+        ?.querySelector(".buzzbro-generate-btn") ||
+      replyBox.closest(".css-175oi2r")?.querySelector(".buzzbro-generate-btn");
+
+    if (!button) {
+      console.log("Button not found");
+      return;
+    }
+
+    const originalText = button.innerHTML;
+    button.innerHTML = "⏳ Generating...";
+    button.disabled = true;
+
+    try {
+      const settings = await window.BuzzBroAPI.getStoredSettings();
+
+      if (!settings.apiKey) {
+        throw new Error(
+          "Please configure your Gemini API key in the extension settings"
+        );
+      }
+
+      if (!settings.enabled) {
+        throw new Error("BuzzBro is disabled. Please enable it in settings");
+      }
+
+      const generatedReply = await window.BuzzBroAPI.generateReply(
+        tweetText,
+        settings.apiKey,
+        settings.customPrompt
+      );
+
+      if (replyBox && generatedReply) {
+        if (replyBox.tagName === "DIV" && replyBox.contentEditable === "true") {
+          replyBox.textContent = generatedReply;
+          replyBox.dispatchEvent(new Event("input", { bubbles: true }));
+        } else if (replyBox.tagName === "TEXTAREA") {
+          replyBox.value = generatedReply;
+          replyBox.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+
+        replyBox.focus();
+        console.log("✅ Reply generated and inserted:", generatedReply);
+      }
+
+      button.innerHTML = "✅ Generated!";
       setTimeout(() => {
         button.innerHTML = originalText;
         button.disabled = false;
       }, 2000);
+    } catch (error) {
+      console.error("❌ Error generating reply:", error);
+
+      button.innerHTML = "❌ Error";
+      button.style.background =
+        "linear-gradient(45deg, #dc2626, #ef4444) !important";
+
+      setTimeout(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+        button.style.background =
+          "linear-gradient(45deg, #1d4ed8, #3b82f6) !important";
+      }, 3000);
+
+      if (error.message.includes("API key")) {
+        const userConfirmed = confirm(
+          "Please configure your Gemini API key in the extension settings. Open settings now?"
+        );
+        if (userConfirmed) {
+          chrome.runtime.sendMessage({ action: "openOptions" });
+        }
+      }
     }
   } catch (error) {
     console.error("❌ Error handling generate click:", error);

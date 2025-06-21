@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Get elements
   const enabledToggle = document.getElementById("enabledToggle");
   const themeSelect = document.getElementById("theme");
+  const apiKeyInput = document.getElementById("apiKey");
+  const customPromptInput = document.getElementById("customPrompt");
   const saveBtn = document.getElementById("saveBtn");
   const resetBtn = document.getElementById("resetBtn");
 
@@ -15,10 +17,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       const settings = await chrome.storage.sync.get({
         enabled: true,
         theme: "auto",
+        apiKey: "",
+        customPrompt: "",
       });
 
       enabledToggle.checked = settings.enabled;
       themeSelect.value = settings.theme;
+      apiKeyInput.value = settings.apiKey;
+      customPromptInput.value = settings.customPrompt;
     } catch (error) {
       console.error("Error loading settings:", error);
     }
@@ -30,6 +36,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const settings = {
         enabled: enabledToggle.checked,
         theme: themeSelect.value,
+        apiKey: apiKeyInput.value,
+        customPrompt: customPromptInput.value,
       };
 
       await chrome.storage.sync.set(settings);
@@ -55,6 +63,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const defaults = {
         enabled: true,
         theme: "auto",
+        apiKey: "",
+        customPrompt: "",
       };
 
       await chrome.storage.sync.set(defaults);

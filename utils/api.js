@@ -1,58 +1,99 @@
-// BuzzBro API Utilities
-// Will be used for future API integrations and external services
+const GEMINI_API_URL =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
-class BuzzBroAPI {
-  constructor() {
-    this.baseURL = "https://api.buzzbro.com"; // Placeholder for future API
-    this.version = "1.0.0";
-  }
-
-  // Future method for API authentication
-  async authenticate(token) {
-    try {
-      // Placeholder for authentication logic
-      console.log("API authentication - placeholder");
-      return { success: true, token };
-    } catch (error) {
-      console.error("Authentication failed:", error);
-      return { success: false, error };
+async function generateReply(tweetText, apiKey, customPrompt = "") {
+  try {
+    if (!apiKey) {
+      throw new Error("API key is required");
     }
-  }
 
-  // Future method for tweet enhancement
-  async enhanceTweet(tweetData) {
-    try {
-      // Placeholder for tweet enhancement logic
-      console.log("Tweet enhancement - placeholder", tweetData);
-      return { success: true, enhanced: tweetData };
-    } catch (error) {
-      console.error("Tweet enhancement failed:", error);
-      return { success: false, error };
+    if (!tweetText) {
+      throw new Error("Tweet text is required");
     }
-  }
 
-  // Future method for analytics
-  async getAnalytics() {
-    try {
-      // Placeholder for analytics logic
-      console.log("Analytics retrieval - placeholder");
-      return {
-        success: true,
-        data: {
-          tweetsEnhanced: 0,
-          lastUpdate: new Date().toISOString(),
+    const defaultPrompt = `Generate a witty, engaging, and thoughtful reply to this tweet. The reply should:
+- Be conversational and natural
+- Add value to the discussion
+- Be under 280 characters
+- Avoid controversial topics
+- Be positive and constructive
+
+Tweet to reply to: "${tweetText}"
+
+Generate only the reply text, nothing else:`;
+
+    const prompt = customPrompt || defaultPrompt;
+    const fullPrompt = customPrompt
+      ? `${customPrompt}\n\nTweet: "${tweetText}"\n\nReply:`
+      : `${defaultPrompt}`;
+
+    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: fullPrompt,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 100,
         },
-      };
-    } catch (error) {
-      console.error("Analytics retrieval failed:", error);
-      return { success: false, error };
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `API Error: ${errorData.error?.message || response.statusText}`
+      );
     }
+
+    const data = await response.json();
+
+    if (
+      !data.candidates ||
+      !data.candidates[0] ||
+      !data.candidates[0].content
+    ) {
+      throw new Error("Invalid response from Gemini API");
+    }
+
+    const generatedText = data.candidates[0].content.parts[0].text.trim();
+
+    return generatedText.length > 280
+      ? generatedText.substring(0, 277) + "..."
+      : generatedText;
+  } catch (error) {
+    console.error("Error generating reply:", error);
+    throw error;
   }
 }
 
-// Export for use in other scripts
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = BuzzBroAPI;
-} else {
-  window.BuzzBroAPI = BuzzBroAPI;
+async function getStoredSettings() {
+  try {
+    const settings = await chrome.storage.sync.get({
+      apiKey: "",
+      customPrompt: "",
+      enabled: true,
+    });
+    return settings;
+  } catch (error) {
+    console.error("Error getting stored settings:", error);
+    throw error;
+  }
 }
+
+window.BuzzBroAPI = {
+  generateReply,
+  getStoredSettings,
+};

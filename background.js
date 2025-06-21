@@ -7,6 +7,8 @@ chrome.runtime.onInstalled.addListener((details) => {
     chrome.storage.sync.set({
       enabled: true,
       theme: "auto",
+      apiKey: "",
+      customPrompt: "",
     });
   }
 });
@@ -20,6 +22,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse(data);
       });
       return true; // Keep message channel open for async response
+
+    case "openOptions":
+      chrome.runtime.openOptionsPage();
+      sendResponse({ success: true });
+      return true;
 
     default:
       sendResponse({ error: "Unknown action" });
