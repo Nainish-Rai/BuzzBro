@@ -1,6 +1,3 @@
-// BuzzBro Options Script
-// Handles options page interactions and settings
-
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("BuzzBro options page loaded");
 
